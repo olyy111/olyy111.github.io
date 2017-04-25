@@ -17,7 +17,7 @@
 <!--<![endif]-->
 
 <head>
-  <title>Archives: 2017/4 | null</title>
+  <title>前端性能的一些小结 | null</title>
   <!-- Meta data -->
     <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
@@ -59,7 +59,7 @@
 </head>
 
 <!--
-<body class="home-template">
+<body class="post-template">
 -->
 <body id="index" class="lightnav animsition">
 
@@ -149,69 +149,85 @@
         <!-- ============================ Header & Logo bar =========================== -->
 
 
-      <!-- ============================ Hero Image =========================== -->
-
-<section id="hero" class="scrollme">
-    <div class="container-fluid element-img" style="background: url(/img/bg_img.jpg) no-repeat center center fixed;background-size: cover">
-        <div class="row">
-            <div class="col-xs-12 col-sm-8 col-sm-offset-2 col-md-8 col-md-offset-2 vertical-align cover boost text-center">
-                <div class="center-me animateme" data-when="exit" data-from="0" data-to="0.6" data-opacity="0" data-translatey="100">
-                    <div>
-                        
-                        <h2>YOU'VE MADE A <span>BRAVE</span> DECISION, WELCOME.</h2>
-                        <p></p>
-                        
-                        <h2></h2>
-                        <p>每一个不曾起舞的日子都是对生命的辜负。</p>
-                        
-
-                    </div>
-                </div>
-            </div>
-            <!-- // .col-md-12 -->
-        </div>
-        <div class="herofade beige-dk"></div>
-    </div>
-</section>
-
-<!-- Height spacing helper -->
-<div class="heightblock"></div>
-<!-- // End height spacing helper -->
-
-<!-- ============================ END Hero Image =========================== -->
-
-
-
-
-<section id="services">
+      
+<section id="intro">
     <div class="container">
-        <div class="row">
-            <div class="col-md-10 col-md-offset-1">
-                <div class="row boxes">
-                    
-                    
-                        
-                        
-                        <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3 wow fadeInUp" data-wow-delay="0.3s">
-                            
-                              <h4 class="title"><a href="/2017/04/25/前端性能的一些小结/">前端性能的一些小结</a></h4>
-                            
-                            <p><time datetime="2017-04-25T08:08:14.000Z"><a href="/2017/04/25/前端性能的一些小结/">2017-04-25</a></time></p>
-                        </div>
-                    
-                </div>
-            </div>    
+        <div class="row col-md-offset-2">
+            <div class="col-md-8">
+    			<span class="post-meta">
+      <time datetime="2017-04-25T08:08:14.000Z" itemprop="datePublished">
+          2017-04-25
+      </time>
+    
+    
+    | 
+    <a href='/tags/JS/'>JS</a>
+    
+    
+</span>
+                <h1>前端性能的一些小结</h1>
+            </div>
         </div>
-    </div>
-</section> 
+        <div class="col-md-8 col-md-offset-2">
+      		<h2 id="静态优化"><a href="#静态优化" class="headerlink" title="静态优化"></a>静态优化</h2><p>初始的加载优化</p>
+<h3 id="减少请求数和请求文件大小"><a href="#减少请求数和请求文件大小" class="headerlink" title="减少请求数和请求文件大小"></a>减少请求数和请求文件大小</h3><ul>
+<li>雪碧图</li>
+<li>文件合并</li>
+<li>大型网站采用首页中内置css和js，异步加载其他资源文件， 又能方便别的页面使用缓存</li>
+<li>减少重复脚本</li>
+<li>压缩</li>
+<li>合并</li>
+<li>favicon.ico要小而且可缓存</li>
+<li>对可重复利用资源做客户端持久化缓存localStroge</li>
+</ul>
+<h3 id="阻塞非阻塞"><a href="#阻塞非阻塞" class="headerlink" title="阻塞非阻塞"></a>阻塞非阻塞</h3><p>不要阻塞关键DOM的样式和DOM节点加载</p>
+<ul>
+<li>将script标签放置到body底部</li>
+<li>一些非必要因素的资源异步加载</li>
+</ul>
+<h3 id="减少加载的资源数量（DOM或者其他资源）和资源大小"><a href="#减少加载的资源数量（DOM或者其他资源）和资源大小" class="headerlink" title="减少加载的资源数量（DOM或者其他资源）和资源大小"></a>减少加载的资源数量（DOM或者其他资源）和资源大小</h3><ul>
+<li>懒加载图片</li>
+<li>BigRender<br>大型网站采用图片懒加载的原理， 去懒加载DOM， 需要懒加载的html放在textarea标签里， style 与script 一并写入，实现方法，<a href="http://www.cnblogs.com/zichi/p/5252629.html" target="_blank" rel="external">参阅这里</a></li>
+<li>减少无用DOM</li>
+</ul>
+<h2 id="动态优化"><a href="#动态优化" class="headerlink" title="动态优化"></a>动态优化</h2><p>页面加载完毕后的交互优化， 或者是一些动画优化</p>
+<h3 id="重排和重绘"><a href="#重排和重绘" class="headerlink" title="重排和重绘"></a>重排和重绘</h3><p>js的操作应该引起最少的重排和重绘</p>
+<ul>
+<li>动画效果，尽量不要去动DOM的盒模型大小和位置， 以免引起重排，比如宽高，<code>display:none</code>都会引起重排重绘</li>
+<li>尽量不要利用transition和盒模型属性做动画，导致频繁缓存到GPU（耗时）去重新渲染，应该利用transform属性 filter opactiy 等等，直接做Gpu渲染，而不是不断的引起重排和重绘</li>
+<li>如若插入标签， 插入到body后面，最小可能的重排和重绘代价</li>
+<li>offsetWidth类似的查询， clientWidth类似的查询， 还有盒模型查询getBoundingClientRect, css查询<code>getComputedStyle</code>等，如果多次使用，应该缓存</li>
+<li><p>最小化操作DOM，不论是字符串的拼接， 还是DOM的多次查询，例如遍历等等， 都应该避免</p>
+</li>
+<li><p>任何对DOM的操作尽量减少。。。</p>
+</li>
+</ul>
+<h3 id="js代码优化"><a href="#js代码优化" class="headerlink" title="js代码优化"></a>js代码优化</h3><p><a href="http://www.cnblogs.com/liyunhua/p/4529086.html#_label25" target="_blank" rel="external">这里</a></p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
+<li>最少请求数</li>
+<li>最小请求文件以及资源（图片等）的大小</li>
+<li>最少的dom以及dom操作</li>
+<li>最小的渲染开销</li>
+<li>最优化的js性能</li>
+<li>最合理的进行异步加载资源以及js异步操作</li>
+</ul>
 
-<section id="statement">
-    <div class="container text-center wow fadeInUp" data-wow-delay="0.5s">
-        <div class="row">
-            <p></p>
+            <div class="clearfix"></div>
+            <hr class="nogutter">
         </div>
+        <nav class="pagination" role="pagination">
+    
+    
+</nav>
+
+        <div class="duoshuo">
+
+
+</div>
     </div>
 </section>
+
+
       
 <!-- ============================ Footer =========================== -->
 
