@@ -17,7 +17,7 @@
 <!--<![endif]-->
 
 <head>
-  <title>前端性能的一些小结 | null</title>
+  <title>null</title>
   <!-- Meta data -->
     <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
@@ -155,72 +155,88 @@
         <div class="row col-md-offset-2">
             <div class="col-md-8">
     			<span class="post-meta">
-      <time datetime="2017-04-25T08:08:14.000Z" itemprop="datePublished">
-          2017-04-25
+      <time datetime="2017-05-21T13:18:40.683Z" itemprop="datePublished">
+          2017-05-21
       </time>
     
-    
-    | 
-    <a href='/tags/JS/'>JS</a>
-    
-    
 </span>
-                <h1>前端性能的一些小结</h1>
+                <h1></h1>
             </div>
         </div>
         <div class="col-md-8 col-md-offset-2">
-      		<h2 id="静态优化"><a href="#静态优化" class="headerlink" title="静态优化"></a>静态优化</h2><p>初始的加载优化</p>
-<h3 id="减少请求数和请求文件大小"><a href="#减少请求数和请求文件大小" class="headerlink" title="减少请求数和请求文件大小"></a>减少请求数和请求文件大小</h3><ul>
-<li>雪碧图</li>
-<li>文件合并</li>
-<li>大型网站采用首页中内置css和js，异步加载其他资源文件， 又能方便别的页面使用缓存</li>
-<li>减少重复脚本</li>
-<li>压缩</li>
-<li>合并</li>
-<li>favicon.ico要小而且可缓存</li>
-<li>对可重复利用资源做客户端持久化缓存localStroge</li>
-</ul>
-<h3 id="阻塞非阻塞"><a href="#阻塞非阻塞" class="headerlink" title="阻塞非阻塞"></a>阻塞非阻塞</h3><p>不要阻塞关键DOM的样式和DOM节点加载</p>
+      		<h1 id="Promise-A-解读"><a href="#Promise-A-解读" class="headerlink" title="Promise A+ 解读"></a>Promise A+ 解读</h1><hr>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>对照<a href="http://www.ituring.com.cn/article/66566" target="_blank" rel="external">图灵社区翻译</a>与<a href="https://promisesaplus.com/" target="_blank" rel="external">原文</a>结合个人理解希望能以更加通俗易懂的方式解读 promise A+规范， 因此并不是翻译， 罗列了其中的关键点，并不完整，请最好结合<a href="https://promisesaplus.com/" target="_blank" rel="external">原文</a>理解， 水平有限，欢迎指正</p>
+<hr>
+<p>一个开放、健全且通用的 JavaScript Promise 标准。由开发者制定，供开发者参考。</p>
+<p>Promise 表示一个异步操作的最终结果，与之进行交互的方式主要是 then 方法，该方法注册了两个回调函数，用于接收 promise 的终值或本 promise 不能执行的原因。</p>
+<p>核心的 Promises/A+ 规范不设计如何创建、解决和拒绝 promise，而是专注于提供一个通用的 then 方法。上述对于 promises 的操作方法将来在其他规范中可能会提及。</p>
+<hr>
+<h2 id="1-术语"><a href="#1-术语" class="headerlink" title="1.术语"></a>1.术语</h2><hr>
+<h3 id="Promise"><a href="#Promise" class="headerlink" title="Promise"></a>Promise</h3><p>promise 是一个拥有 then 方法的对象或函数，其行为符合本规范；</p>
+<h3 id="thenable"><a href="#thenable" class="headerlink" title="thenable"></a>thenable</h3><p>是一个定义了 then 方法的对象或函数</p>
+<h3 id="value"><a href="#value" class="headerlink" title="value"></a>value</h3><p>指任何 JavaScript 的合法值（包括 undefined , thenable 和 promise）；</p>
+<h3 id="异常（exception）"><a href="#异常（exception）" class="headerlink" title="异常（exception）"></a>异常（exception）</h3><p>是使用 throw 语句抛出的一个值。</p>
+<h3 id="reason"><a href="#reason" class="headerlink" title="reason"></a>reason</h3><p>表示一个 promise 的拒绝原因。</p>
+<h2 id="2-规范"><a href="#2-规范" class="headerlink" title="2.规范"></a>2.规范</h2><hr>
+<h3 id="2-1状态"><a href="#2-1状态" class="headerlink" title="2.1状态"></a>2.1状态</h3><p>promise 必须处于三个状态之一： pending(等待)， fulfilled(成功)， rejected（失败）， 状态以<code>state</code>来表示</p>
+<p>state 的初始值是pending, 可以赋值为（状态改变） <code>fulfilled</code>或者<code>rejected</code>，但是一旦状态改变，状态就保持恒定（不能在进行赋值操作）</p>
+<p>在状态改变为成功或者失败时</p>
 <ul>
-<li>将script标签放置到body底部</li>
-<li>一些非必要因素的资源异步加载</li>
+<li>必须拥有一个不可变的value(成功时)或者reason(失败时)， 我们通常会将这个value或者reason在then注册的回调函数调用时传递</li>
 </ul>
-<h3 id="减少加载的资源数量（DOM或者其他资源）和资源大小"><a href="#减少加载的资源数量（DOM或者其他资源）和资源大小" class="headerlink" title="减少加载的资源数量（DOM或者其他资源）和资源大小"></a>减少加载的资源数量（DOM或者其他资源）和资源大小</h3><ul>
-<li>懒加载图片</li>
-<li>BigRender<br>大型网站采用图片懒加载的原理， 去懒加载DOM， 需要懒加载的html放在textarea标签里， style 与script 一并写入，实现方法，<a href="http://www.cnblogs.com/zichi/p/5252629.html" target="_blank" rel="external">参阅这里</a></li>
-<li>减少无用DOM</li>
-</ul>
-<h2 id="动态优化"><a href="#动态优化" class="headerlink" title="动态优化"></a>动态优化</h2><p>页面加载完毕后的交互优化， 或者是一些动画优化</p>
-<h3 id="重排和重绘"><a href="#重排和重绘" class="headerlink" title="重排和重绘"></a>重排和重绘</h3><p>js的操作应该引起最少的重排和重绘</p>
+<p>不可变： 盖指当 value 或 reason 不是基本值时，只要求其引用地址相等，但属性值可被更改</p>
+<h3 id="2-2-then方法"><a href="#2-2-then方法" class="headerlink" title="2.2 then方法"></a>2.2 then方法</h3><p>一个 promise 必须提供一个 then 方法以访问其当前值、value和reason。</p>
+<p>promise 的 then 方法接受两个参数：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">promise.then(onFulfilled, onRejected)</div></pre></td></tr></table></figure></p>
+<h4 id="2-2-1-参数可选"><a href="#2-2-1-参数可选" class="headerlink" title="2.2.1.参数可选"></a>2.2.1.参数可选</h4><p><code>onFulfilled</code> 和 <code>onRejected</code> 都是可选参数。</p>
 <ul>
-<li>动画效果，尽量不要去动DOM的盒模型大小和位置， 以免引起重排，比如宽高，<code>display:none</code>都会引起重排重绘</li>
-<li>尽量不要利用transition和盒模型属性做动画，导致频繁缓存到GPU（耗时）去重新渲染，应该利用transform属性 filter opactiy 等等，直接做Gpu渲染，而不是不断的引起重排和重绘</li>
-<li>如若插入标签， 插入到body后面，最小可能的重排和重绘代价</li>
-<li>offsetWidth类似的查询， clientWidth类似的查询， 还有盒模型查询getBoundingClientRect, css查询<code>getComputedStyle</code>等，如果多次使用，应该缓存</li>
-<li><p>最小化操作DOM，不论是字符串的拼接， 还是DOM的多次查询，例如遍历等等， 都应该避免</p>
-</li>
-<li><p>任何对DOM的操作尽量减少。。。</p>
-</li>
+<li>如果 <code>onFulfilled</code> 不是函数，其必须被忽略</li>
+<li>如果 <code>onRejected</code> 不是函数，其必须被忽略</li>
 </ul>
-<h3 id="js代码优化"><a href="#js代码优化" class="headerlink" title="js代码优化"></a>js代码优化</h3><p><a href="http://www.cnblogs.com/liyunhua/p/4529086.html#_label25" target="_blank" rel="external">这里</a></p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
-<li>最少请求数</li>
-<li>最小请求文件以及资源（图片等）的大小</li>
-<li>最少的dom以及dom操作</li>
-<li>最小的渲染开销</li>
-<li>最优化的js性能</li>
-<li>最合理的进行异步加载资源以及js异步操作</li>
+<h4 id="2-2-2-如果-onFulfilled-是函数"><a href="#2-2-2-如果-onFulfilled-是函数" class="headerlink" title="2.2.2.如果 onFulfilled 是函数"></a>2.2.2.如果 <code>onFulfilled</code> 是函数</h4><ul>
+<li>只有当promise 的state 变为成功态（state = fulfilled）, <code>onFulfilled</code>才可以被调用， 并且在调用时传递value</li>
+<li>state 变为成功态（state = fulfilled）之后才可以调用这个参数</li>
+<li>只能调用一次</li>
 </ul>
+<h4 id="2-2-3-如果-onRejected-是函数"><a href="#2-2-3-如果-onRejected-是函数" class="headerlink" title="2.2.3.如果 onRejected 是函数"></a>2.2.3.如果 <code>onRejected</code> 是函数</h4><ul>
+<li>只有当promise 的state 变为失败态（state = rejected）, <code>onRejected</code>才可以被调用， 并且在调用时传递reason</li>
+<li>state 变为成功态（state = fulfilled）之后才可以调用这个参数</li>
+<li>只能调用一次</li>
+</ul>
+<h4 id="2-2-4-多次调用"><a href="#2-2-4-多次调用" class="headerlink" title="2.2.4.多次调用"></a>2.2.4.多次调用</h4><p>then 方法可以被同一个 promise 调用多次</p>
+<ul>
+<li>当 promise 成功执行时，所有 onFulfilled 需按照其注册顺序依次回调</li>
+<li>失败同上</li>
+</ul>
+<h4 id="2-2-4-then函数必须返回一个promise"><a href="#2-2-4-then函数必须返回一个promise" class="headerlink" title="2.2.4.then函数必须返回一个promise"></a>2.2.4.then函数必须返回一个promise</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">promise2 = promise1.then(onFulfilled, onRejected);</div></pre></td></tr></table></figure>
+<ul>
+<li>如果 <code>onFulfilled</code> 或者 <code>onRejected</code> 返回一个值 x ，则运行下面的伪代码（仅仅是为方便表示解析过程）：<code>[[Resolve]](promise2, x)</code></li>
+<li>如果 <code>onFulfilled</code> 或者 <code>onRejected</code>抛出一个异常 e ，则 promise2 必须改变为失败状态，并返回拒因 e</li>
+<li>如果 <code>onFulfilled</code> 不是函数且 promise1 已经变为成功态， promise2 必须也变为成功态，promise2 的value 就是promise1d的 value</li>
+<li>如果 <code>onRejected</code> 不是函数且 promise1 已经变为失败态， promise2 必须也变为失败态，promise2 的reason 就是promise1的 reason</li>
+</ul>
+<h3 id="2-3伪代码-Resolve-promise2-x-的过程"><a href="#2-3伪代码-Resolve-promise2-x-的过程" class="headerlink" title="2.3伪代码[[Resolve]](promise2, x)的过程"></a>2.3伪代码<code>[[Resolve]](promise2, x)</code>的过程</h3><p>这个伪代码表示一个抽象操作，其需输入一个 promise 和一个值，如果then函数返回了一个promise, 那么就让promise2的状态与这个promise的状态相等，否则将promise2的状态变为成功态，将x当作value传递</p>
+<p>这样做的好处就是你可以返回不遵循promise A+规范的thenable，可以一样的工作</p>
+<p>运行 <a href="promise, x">[Resolve]</a> 需遵循以下步骤：</p>
+<h4 id="2-3-1-x-与-promise2-相等"><a href="#2-3-1-x-与-promise2-相等" class="headerlink" title="2.3.1. x 与 promise2 相等"></a>2.3.1. x 与 promise2 相等</h4><p>以 TypeError为reason使promise2变为失败态</p>
+<h4 id="2-3-2-x-为-Promise"><a href="#2-3-2-x-为-Promise" class="headerlink" title="2.3.2. x 为 Promise"></a>2.3.2. x 为 Promise</h4><p>promise2 接受 x 的状态</p>
+<ul>
+<li>如果 x 处于等待态， promise2 需保持为等待态直至 x 改变为成功态或者失败态</li>
+<li>如果 x 变为成功态，也将promise2变为成功态，并且value相同</li>
+<li>如果 x 处于失败态，也将promise2变为失败态，并且reason相同</li>
+</ul>
+<h4 id="2-3-3-x-不为对象或者函数"><a href="#2-3-3-x-不为对象或者函数" class="headerlink" title="2.3.3. x 不为对象或者函数"></a>2.3.3. x 不为对象或者函数</h4><p>将promise2改变为成功态， 并且以x作为value传递</p>
+<h4 id="2-3-4-x为对象或者函数"><a href="#2-3-4-x为对象或者函数" class="headerlink" title="2.3.4 x为对象或者函数"></a>2.3.4 x为对象或者函数</h4><p>这里个人感觉理解不到位， 就不误导人，<a href="https://promisesaplus.com/" target="_blank" rel="external">参看原文</a></p>
+<p>x为Promise时，如果x本身也是由一个thenable的状态而定（x好比这里的promise2, thenable好比这里的x）， 伪代码<code>[[Resolve]](promise, thenable)</code> 会再次执行，根据上述的算法将会陷入无限递归之中。算法虽不强制要求，但也鼓励施者检测这样的递归是否存在，若检测到存在则以一个可识别的 TypeError 为据因来拒绝 promise2 。</p>
 
             <div class="clearfix"></div>
             <hr class="nogutter">
         </div>
         <nav class="pagination" role="pagination">
     
-    
-    <a class="pull-right" href="/2017/05/21/Promise A+ 解读/">
-         →
+    <a class="pull-left" href="/2017/04/25/前端性能的一些小结/" style="float: left;">
+        ← 前端性能的一些小结
     </a>
+    
     
 </nav>
 
